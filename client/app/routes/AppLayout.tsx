@@ -27,7 +27,7 @@ export default function AppLayout() {
                         <div className="min-w-0 flex-1">
                             <Outlet />
                         </div>
-                        <ExploreSidebar />
+                        {!location.pathname.startsWith("/messages") && <ExploreSidebar />}
                     </div>
                 </main>
 

@@ -5,7 +5,7 @@ import { APIResponse } from '../lib/apiResponse.ts';
 import { deleteFromCloudinary, uploadToCloudinary } from '../lib/cloudinary.ts';
 import { db } from '../lib/db/client.ts';
 import { user } from '../lib/auth-schema.ts';
-import { eq } from 'drizzle-orm';
+import { eq, and, not, or, ilike } from 'drizzle-orm';
 import { APIError } from 'better-auth';
 
 export async function me(req: Request, res: Response) {
@@ -395,3 +395,48 @@ export async function verifyForgetPasswordOTP(req: Request, res: Response) {
       : new AppError();
   }
 }
+
+export async function searchUsers(req: Request, res: Response) {
+  try {
+    if (!req.session) {
+      throw new AppError('User needs to be logged in to perform search', 401);
+    }
+    const myId = req.session.user.id;
+    const queryStr = (req.query.q as string || '').trim();
+
+    if (!queryStr) {
+      return res
+        .status(200)
+        .json(new APIResponse('Users searched successfully', 200, []));
+    }
+
+    const users = await db
+      .select({
+        id: user.id,
+        name: user.name,
+        username: user.username,
+        image: user.image,
+      })
+      .from(user)
+      .where(
+        and(
+          not(eq(user.id, myId)),
+          or(
+            ilike(user.name, `%${queryStr}%`),
+            ilike(user.username, `%${queryStr}%`)
+          )
+        )
+      )
+      .limit(20);
+
+    return res
+      .status(200)
+      .json(new APIResponse('Users searched successfully', 200, users));
+  } catch (error) {
+    console.error('searchUsers :: ', error);
+    throw error instanceof AppError || error instanceof APIError
+      ? error
+      : new AppError();
+  }
+}
+

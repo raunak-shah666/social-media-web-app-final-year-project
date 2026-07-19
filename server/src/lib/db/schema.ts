@@ -186,3 +186,38 @@ export const likeRelations = relations(like, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+export const message = p.pgTable('message', {
+  id: p.serial('id').primaryKey(),
+  senderId: p
+    .text('sender_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  receiverId: p
+    .text('receiver_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  content: p.text('content').notNull(),
+  parentMessageId: p.integer('parent_message_id'),
+  createdAt: p.timestamp('created_at').defaultNow().notNull(),
+  updatedAt: p
+    .timestamp('updated_at')
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
+export const messageRelations = relations(message, ({ one }) => ({
+  sender: one(user, {
+    fields: [message.senderId],
+    references: [user.id],
+  }),
+  receiver: one(user, {
+    fields: [message.receiverId],
+    references: [user.id],
+  }),
+  parentMessage: one(message, {
+    fields: [message.parentMessageId],
+    references: [message.id],
+  }),
+}));
+

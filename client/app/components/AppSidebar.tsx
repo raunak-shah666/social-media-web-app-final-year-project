@@ -17,7 +17,7 @@ import {
     DialogFooter
 } from "~/components/ui/dialog"
 import { Logo } from "./Logo"
-import { HomeIcon } from "lucide-react"
+import { HomeIcon, MessageSquare } from "lucide-react"
 import { NavLink, useLocation } from "react-router"
 import React from "react"
 import { useMe } from "~/hooks/useMe"
@@ -28,10 +28,14 @@ import LogoutButton from "./LogoutButton"
 
 const sidebarItems = [
     {
-
         icon: <HomeIcon />,
         name: "Home",
         to: "/home"
+    },
+    {
+        icon: <MessageSquare />,
+        name: "Messages",
+        to: "/messages"
     }
 ]
 

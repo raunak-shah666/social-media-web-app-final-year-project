@@ -16,5 +16,6 @@ export default [
     layout("./routes/AppLayout.tsx", [
         route("/home", "./routes/home.tsx"),
         route("/post/:id", "./routes/post.$id.tsx"),
+        route("/messages", "./routes/messages.tsx"),
     ]),
 ] satisfies RouteConfig;

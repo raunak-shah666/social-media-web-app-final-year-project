@@ -9,6 +9,7 @@ import repostRouter from './routers/reposts.router.ts';
 import followsRouter from './routers/follows.router.js';
 import feedRouter from './routers/feed.router.js';
 import likesRouter from './routers/likes.router.js';
+import messagesRouter from './routers/messages.router.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/api/follow', followsRouter);
 app.use('/api/likes', likesRouter);
 app.use('/api/feed', feedRouter);
 app.use('/api/repost', repostRouter);
+app.use('/api/messages', messagesRouter);
 
 app.use(errorHandler);
 
